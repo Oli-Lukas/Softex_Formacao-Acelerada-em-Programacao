@@ -19,7 +19,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define TAMANHO_TURMA 5
+#define TAMANHO_TURMA 1
 #define TAMANHO_NOME  50
 #define TOTAL_ALUNOS  (TAMANHO_TURMA * 4)
 
@@ -37,6 +37,9 @@ typedef struct
 
 void clean_stdin();
 void ler_aluno(Aluno *aluno);
+bool eh_aluno_aprovado(Aluno aluno);
+bool permite_aluno(Turma t, Aluno aluno);
+void exibe_turma(Turma t, const char *turma_titulo);
 
 int main()
 {
@@ -58,7 +61,24 @@ int main()
   {
     printf("%d)\n", contador+1);
     ler_aluno(&alunos[contador]);
+
+    if (eh_aluno_aprovado(alunos[contador]))
+    {
+      quantidade_aprovados++;
+
+      /** Aloca aluno em uma turma. **/
+      if (permite_aluno(turma_a, alunos[contador]))
+        turma_a.alunos[turma_a.quantidade++] = alunos[contador];
+      else if (permite_aluno(turma_b, alunos[contador]))
+        turma_b.alunos[turma_b.quantidade++] = alunos[contador];
+      else if (permite_aluno(turma_c, alunos[contador]))
+        turma_c.alunos[turma_c.quantidade++] = alunos[contador];
+      else
+        turma_d.alunos[turma_d.quantidade++] = alunos[contador];
+    }
   }
+
+  exibe_turma(turma_a, "Turma A");
 
   return EXIT_SUCCESS;
 }
@@ -84,6 +104,33 @@ void ler_aluno(Aluno *aluno)
   scanf("%f", &aluno->nota);
 
   clean_stdin();
+}
+
+bool eh_aluno_aprovado(Aluno aluno)
+{
+  return (aluno.nota >= 7) ? true : false;
+}
+
+bool permite_aluno(Turma t, Aluno aluno)
+{
+  for (int contador = 0; contador < t.quantidade; contador++)
+    if (t.alunos[contador].nota == aluno.nota)
+      return false;
+
+  return true;
+}
+
+void exibe_turma(Turma t, const char *turma_titulo)
+{
+  printf("\t\t%s\n\n", turma_titulo);
+
+  for (int contador = 0; contador < t.quantidade; contador++)
+  {
+    printf("\tAluno: %s\n", t.alunos[contador].nome);
+    printf("\tNota : %.2f\n\n", t.alunos[contador].nota);
+  }
+
+  printf("\t##########\n\n");
 }
 
 #undef TAMANHO_TURMA
