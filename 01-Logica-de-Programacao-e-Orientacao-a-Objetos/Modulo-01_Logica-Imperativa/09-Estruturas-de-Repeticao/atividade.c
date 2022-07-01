@@ -19,7 +19,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define TAMANHO_TURMA 1
+#define TAMANHO_TURMA 25
 #define TAMANHO_NOME  50
 #define TOTAL_ALUNOS  (TAMANHO_TURMA * 4)
 
@@ -37,8 +37,12 @@ typedef struct
 
 void clean_stdin();
 void ler_aluno(Aluno *aluno);
+bool valida_nota(float nota);
 bool eh_aluno_aprovado(Aluno aluno);
-bool permite_aluno(Turma t, Aluno aluno);
+bool permite_aluno_turma(Turma t, Aluno aluno);
+bool turma_cheia(Turma t);
+bool turma_contem_nota(Turma t, float nota_alvo);
+void adiciona_aluno_turma(Turma *t, Aluno aluno);
 void exibe_turma(Turma t, const char *turma_titulo);
 
 int main()
@@ -59,26 +63,25 @@ int main()
 
   for (int contador = 0; contador < TOTAL_ALUNOS; contador++)
   {
-    printf("%d)\n", contador+1);
+    printf("\t%d)\n", contador+1);
     ler_aluno(&alunos[contador]);
 
     if (eh_aluno_aprovado(alunos[contador]))
     {
       quantidade_aprovados++;
 
-      /** Aloca aluno em uma turma. **/
-      if (permite_aluno(turma_a, alunos[contador]))
-        turma_a.alunos[turma_a.quantidade++] = alunos[contador];
-      else if (permite_aluno(turma_b, alunos[contador]))
-        turma_b.alunos[turma_b.quantidade++] = alunos[contador];
-      else if (permite_aluno(turma_c, alunos[contador]))
-        turma_c.alunos[turma_c.quantidade++] = alunos[contador];
-      else
-        turma_d.alunos[turma_d.quantidade++] = alunos[contador];
+      /** Adiciona aluno em uma turma. **/
+      if      (permite_aluno_turma(turma_a, alunos[contador]))     adiciona_aluno_turma(&turma_a, alunos[contador]);
+      else if (permite_aluno_turma(turma_b, alunos[contador]))     adiciona_aluno_turma(&turma_b, alunos[contador]);
+      else if (permite_aluno_turma(turma_c, alunos[contador]))     adiciona_aluno_turma(&turma_c, alunos[contador]);
+      else if (!turma_cheia(turma_d))                              adiciona_aluno_turma(&turma_d, alunos[contador]);
     }
   }
 
   exibe_turma(turma_a, "Turma A");
+  exibe_turma(turma_b, "Turma B");
+  exibe_turma(turma_c, "Turma C");
+  exibe_turma(turma_d, "Turma D");
 
   return EXIT_SUCCESS;
 }
@@ -96,14 +99,29 @@ void clean_stdin()
     
 void ler_aluno(Aluno *aluno)
 {
-  printf("Digite o nome do aluno: ");
+  printf("\tDigite o nome do aluno: ");
   fgets(aluno->nome, sizeof(char) * TAMANHO_NOME, stdin);
   aluno->nome[strcspn(aluno->nome, "\n")] = '\0';
 
-  printf("Nota de %s: ", aluno->nome);
-  scanf("%f", &aluno->nota);
+  do
+  {
+    printf("\tNota de %s: ", aluno->nome);
+    scanf("%f", &aluno->nota);
+
+    if (!valida_nota(aluno->nota))
+    {
+      printf("\tNota invalida!\n");
+      printf("\tPor favor! Digite uma nota no intervalo [0.00-10.00].\n");
+    }
+  }
+  while(!valida_nota(aluno->nota));
 
   clean_stdin();
+}
+
+bool valida_nota(float nota)
+{
+  return (nota >= 0 && nota <= 10);
 }
 
 bool eh_aluno_aprovado(Aluno aluno)
@@ -111,13 +129,34 @@ bool eh_aluno_aprovado(Aluno aluno)
   return (aluno.nota >= 7) ? true : false;
 }
 
-bool permite_aluno(Turma t, Aluno aluno)
+bool permite_aluno_turma(Turma t, Aluno aluno)
 {
-  for (int contador = 0; contador < t.quantidade; contador++)
-    if (t.alunos[contador].nota == aluno.nota)
-      return false;
+  /** Se a turma estiver cheia retornar 'false'. **/
+  if (turma_cheia(t)) return false;
+
+  /** Se houver aluno com mesma nota retornar 'false'. **/
+  if (turma_contem_nota(t, aluno.nota)) return false;
 
   return true;
+}
+
+bool turma_cheia(Turma t)
+{
+  return (t.quantidade >= TAMANHO_TURMA) ? true : false;
+}
+
+bool turma_contem_nota(Turma t, float nota_alvo)
+{
+  for (int contador = 0; contador < TAMANHO_TURMA; contador++)
+    if (t.alunos[contador].nota == nota_alvo)
+      return true;
+  
+  return false;
+}
+
+void adiciona_aluno_turma(Turma *t, Aluno aluno)
+{
+  t->alunos[t->quantidade++] = aluno;
 }
 
 void exibe_turma(Turma t, const char *turma_titulo)
