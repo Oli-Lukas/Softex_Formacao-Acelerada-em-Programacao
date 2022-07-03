@@ -1,3 +1,6 @@
 # Linguagem C
 *.exe
 *.o
+
+# Python
+__pycache__
