@@ -22,6 +22,13 @@ int main()
   printf("Alocando um espaco para vetor de %ld bytes...\n", TAMANHO_VETOR * sizeof(int));
   ponteiro = (int *) realloc(NULL, TAMANHO_VETOR * sizeof(int));
 
+  if (ponteiro == NULL) {
+    printf("Memoria nao disponivel!\n");
+    printf("Saindo...\n");
+
+    return EXIT_FAILURE;
+  }
+
   preenche_vetor(ponteiro);
   exibe_vetor(ponteiro);
 
