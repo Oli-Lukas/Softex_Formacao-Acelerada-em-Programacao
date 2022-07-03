@@ -12,15 +12,18 @@
 
 #define TAMANHO_VETOR 22
 
+void preenche_vetor(int *ptr_vetor);
+void exibe_vetor(int *ptr_vetor);
+
 int main()
 {
   int *ponteiro;
 
   printf("Alocando um espaco para vetor de %ld bytes...\n", TAMANHO_VETOR * sizeof(int));
-  ponteiro = (int *) calloc(TAMANHO_VETOR, sizeof(int));
+  ponteiro = (int *) realloc(NULL, TAMANHO_VETOR * sizeof(int));
 
-  printf("Realocando um espaco para vetor de %ld bytes...\n", (TAMANHO_VETOR * 2) * sizeof(int));
-  ponteiro = (int *) realloc(ponteiro, (TAMANHO_VETOR * 2) * sizeof(int));
+  preenche_vetor(ponteiro);
+  exibe_vetor(ponteiro);
 
   printf("Liberando espaco na memoria heap...\n");
   free(ponteiro);
@@ -28,6 +31,21 @@ int main()
   printf("finalizando...\n");
   
   return EXIT_SUCCESS;
+}
+
+void preenche_vetor(int *ptr_vetor)
+{
+  for (int contador = 0; contador < TAMANHO_VETOR; contador++)
+  {
+    printf("Digite um numero para a posicao %d do vetor: ", contador + 1);
+    scanf("%d", &ptr_vetor[contador]);
+  }
+}
+
+void exibe_vetor(int *ptr_vetor)
+{
+  for (int contador = 0; contador < TAMANHO_VETOR; contador++)
+    printf("Elemento %d --> %d\n", contador + 1, ptr_vetor[contador]);
 }
 
 #undef TAMANHO_VETOR
