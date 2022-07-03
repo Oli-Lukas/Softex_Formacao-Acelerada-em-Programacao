@@ -18,30 +18,30 @@
 #include <time.h>
 #include <stdbool.h>
 
-#define TAMANHO_ARRAY 10
+#define TAMANHO_VETOR 10
 #define MENOR_NUMERO  0
 #define MAIOR_NUMERO  1000
 
 int  gera_numero();
-void popula_array(int array[]);
-void bubble_sort(int array[]);
-void troca(int array[], int *numero1, int *numero2);
-void exibe_array(int array[]);
+void popula_vetor(int vetor[]);
+void bubble_sort(int vetor[]);
+void troca(int vetor[], int *numero1, int *numero2);
+void exibe_array(int vetor[]);
 
 int main()
 {
-  int array[TAMANHO_ARRAY];
+  int vetor[TAMANHO_VETOR];
 
   srand((unsigned int)time(NULL));
 
-  popula_array(array);
-  printf("Array gerado  : ");
-  exibe_array(array);
+  popula_vetor(vetor);
+  printf("Vetor gerado  : ");
+  exibe_array(vetor);
 
-  bubble_sort(array);
+  bubble_sort(vetor);
 
-  printf("Array ordenado: ");
-  exibe_array(array);
+  printf("Vetor ordenado: ");
+  exibe_array(vetor);
   
   return EXIT_SUCCESS;
 }
@@ -51,30 +51,30 @@ int gera_numero()
   return ((MENOR_NUMERO) + rand() % (MAIOR_NUMERO + 1));
 }
 
-void popula_array(int array[])
+void popula_vetor(int vetor[])
 {
-  for (int contador = 0; contador < TAMANHO_ARRAY; contador++)
-    array[contador] = gera_numero();
+  for (int contador = 0; contador < TAMANHO_VETOR; contador++)
+    vetor[contador] = gera_numero();
 }
 
-void bubble_sort(int array[])
+void bubble_sort(int vetor[])
 {
   /** MÉTODO DE ORDENAÇÃO BOLHA **/
   int limite;
   bool trocou;
 
-  limite = TAMANHO_ARRAY - 1;
+  limite = TAMANHO_VETOR - 1;
   trocou = false;
 
-  for (int i = 0; i < (TAMANHO_ARRAY - 1); i++)
+  for (int i = 0; i < (TAMANHO_VETOR - 1); i++)
   {
     for (int j = 0; j < limite; j++)
     {
       // -> comparar seus elementos dois a dois adjacentes.
-      if (array[j] > array[j + 1])
+      if (vetor[j] > vetor[j + 1])
       {
         // -> se os elementos não estiverem em ordem, então ordenar.
-        troca(array, &array[j], &array[j + 1]);
+        troca(vetor, &vetor[j], &vetor[j + 1]);
         trocou = true;
       }
       // -> senão, avançar para o próximo par. 
@@ -87,7 +87,7 @@ void bubble_sort(int array[])
   }
 }
 
-void troca(int array[], int *numero1, int *numero2)
+void troca(int vetor[], int *numero1, int *numero2)
 {
   int temporario;
 
@@ -96,12 +96,12 @@ void troca(int array[], int *numero1, int *numero2)
   *numero2 = temporario;
 }
 
-void exibe_array(int array[])
+void exibe_array(int vetor[])
 {
   printf("[");
-  for (int contador = 0; contador < TAMANHO_ARRAY - 1; contador++)
-    printf("%d - ", array[contador]);
-  printf("%d]", array[TAMANHO_ARRAY - 1]);
+  for (int contador = 0; contador < TAMANHO_VETOR - 1; contador++)
+    printf("%d - ", vetor[contador]);
+  printf("%d]", vetor[TAMANHO_VETOR - 1]);
 
   putchar('\n');
 }
