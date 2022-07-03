@@ -25,7 +25,7 @@
 int  gera_numero();
 void popula_vetor(int vetor[]);
 void bubble_sort(int vetor[]);
-void troca(int vetor[], int *numero1, int *numero2);
+void troca(int *numero1, int *numero2);
 void exibe_array(int vetor[]);
 
 int main()
@@ -74,7 +74,7 @@ void bubble_sort(int vetor[])
       if (vetor[j] > vetor[j + 1])
       {
         // -> se os elementos não estiverem em ordem, então ordenar.
-        troca(vetor, &vetor[j], &vetor[j + 1]);
+        troca(&vetor[j], &vetor[j + 1]);
         trocou = true;
       }
       // -> senão, avançar para o próximo par. 
@@ -87,7 +87,7 @@ void bubble_sort(int vetor[])
   }
 }
 
-void troca(int vetor[], int *numero1, int *numero2)
+void troca(int *numero1, int *numero2)
 {
   int temporario;
 
